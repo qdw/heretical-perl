@@ -2,12 +2,12 @@
 
 # Digression:  DBIx::Connector #
 
-!SLIDE incremental bullets
+!SLIDE incremental smbullets
 
 ## DBIx::Connector ##
 
 * That's the $c->conn object from the last code sample.
-* $_ (or $_[0], or shift()) is the underlying $dbh
+* $_—or $_[0], or shift()—is the underlying dbh.
 * Defined in MyApp.pm…
 
 !SLIDE smaller code
@@ -69,7 +69,7 @@
         # Do a bunch of DBI stuff
     });
 
-!SLIDE bullets
+!SLIDE smbullets
 
 # Transaction support #
 

@@ -2,13 +2,17 @@
 
 # Why no ORM? #
 
-### Performance Problems ###
+## Performance Problems ##
 
 * Most-heard complaint when we do query-tuning for a client: "Some queries are too slow, but we don't know where they're coming from."
 
 * Mapping SQL queries back to ORM calls takes some work, especially on production systems.
 
 * In essence, you have to do the job of the ORM backwards, in heels.
+
+!SLIDE smbullets incremental
+
+## Performance problems ##
 
 * Second-most-heard complaint:  "Some of our queries were too slow, so we
   rewrote them in raw SQL."
@@ -17,17 +21,17 @@
 
 !SLIDE smbullets incremental
   
-# How ORMs degrade performance #
+## How ORMs degrade performance ##
 
-* The worst fetch an entire resultset at once, rather than lazy-loading
+* The worst fetch an entire resultset at once, rather than lazy-loading.
 
-* (think $sth->fetchall_arrayref() versus $sth->fetchrow_arrayref() )
+* (Think *$sth->fetchall_arrayref()* versus *$sth->fetchrow_arrayref()* .)
 
-* Some do really dumb things, like JOINs or FK enforcement on the client side
+* Some do really dumb things, like JOINs or FK enforcement on the client side…
 
-* … often because they want to support MyISAM or SQLite
+* … often because they want to support MyISAM or SQLite.
 
-* ORMs encourage you to fetch the entire object, not just the columns you need
+* ORMs encourage you to fetch whole rows, not just the columns you need.
 
 !SLIDE smaller code
 
@@ -48,7 +52,7 @@
     });
     order->save();
 
-!SLIDE code
+!SLIDE smaller code
 
 ## This is equivalent to ##
 
@@ -65,7 +69,7 @@
 
 ## … even though there's a foreign-key relationship.  Ack! ##
 
-!SLIDE small code
+!SLIDE smaller code
 
 ## ORMs can make JSON a pain. ##
 
@@ -73,7 +77,7 @@
 
     @@@ perl
     # Note use of aliased
-    use aliased 'My::DB::Object::User::Manager' => 'UserM';
+    use aliased 'My::DB::Object::User::Manager', 'UserM';
 
     sub get_users_json :Local {
         my ($self, $c) = @_;
@@ -81,8 +85,7 @@
         my $users = UserM->get_users(…);
     	    
         $c->stash(
-            # Doesn't work!
-            # The JSON serializer barfs.
+            # Doesn't work!  The JSON serializer barfs.
             users => $users,
         },
     	
@@ -91,21 +94,21 @@
 
 !SLIDE
 
-## (Aside:  note use of aliased.  Very handy for saving typing.) ##
+## (Aside:  note the use of the aliased pragma—very handy for saving typing.) ##
 
 !SLIDE smaller code
 
-## Working JSON approach: ##
+### Working JSON approach: ###
 
     @@@ perl
-    use aliased 'My::DB::Object::User::Manager' => 'UserM';
+    use aliased 'My::DB::Object::User::Manager', 'UserM';
 
     sub get_users_json :Local {
         my ($self, $c) = @_;
     
         my $users = UserM->get_users(…);
 
-        # Unpack the user object manually.
+        # Unpack the user object manually.  What a pain.
         my @user_hashes;
         for my $user (@{ $users }) {
             my $birth_string = $user->birthdate->mdy('/');
@@ -139,7 +142,8 @@
     );
     $c->stash(
             json => {
-                users => $users_ref
+                # So easy.
+                users => $users_ref,
             },
     );
 
@@ -147,7 +151,7 @@
 
 ## Is there hope in Moose? ##
 
-* In theory, you could unpack using Moose introspection.
+* In theory, you could unpack using MOP introspection.
 
 * This  doesn't work for all ORMs, though, as not all are written in Moose.
 
@@ -155,11 +159,11 @@
 
 # Why no ORM? #
 
-## Some queries are very hard to translate into ORM-ese. ##
+## Some types of queries are very hard to translate into ORM-ese. ##
 
 !SLIDE smaller code
 
-## Queries that use aggregates are impossible in most ORMs. ##
+## Using aggregates is impossible in most ORMs. ##
 
     @@@ sql
     -- Find duplicate indexes in a database
@@ -202,59 +206,49 @@
     
     …
 
-!SLIDE smaller code
+!SLIDE smbullets incremental
 
-## Want to try this in an ORM? ##
+## Sound esoteric?  Aggregates are common. ##
 
-    @@@sql
-    -- Find bloated tables, from largest to smallest.
-    SELECT
-      schemaname, tablename, 
-      ROUND(CASE WHEN otta=0 THEN 0.0 ELSE sml.relpages/otta::numeric END,1) AS tbloat,
-      CASE WHEN relpages < otta THEN 0 ELSE relpages::bigint - otta END AS wastedpages,
-      CASE WHEN relpages < otta THEN 0 ELSE bs*(sml.relpages-otta)::bigint END AS wastedbytes,
-      CASE WHEN relpages < otta THEN pg_size_pretty(0) ELSE pg_size_pretty((bs*(relpages-otta))::bigint) END AS wastedsize,
-      iname, ituples::bigint, ipages::bigint, iotta,
-      ROUND(CASE WHEN iotta=0 OR ipages=0 THEN 0.0 ELSE ipages/iotta::numeric END,1) AS ibloat,
-      CASE WHEN ipages < iotta THEN 0 ELSE ipages::bigint - iotta END AS wastedipages,
-      CASE WHEN ipages < iotta THEN 0 ELSE bs*(ipages-iotta) END AS wastedibytes,
-      CASE WHEN ipages < iotta THEN pg_size_pretty(0) ELSE pg_size_pretty((bs*(ipages-iotta))::bigint) END AS wastedisize
-    FROM (
-      SELECT
-        schemaname, tablename, cc.reltuples, cc.relpages, bs,
-        CEIL((cc.reltuples*((datahdr+ma-
-          (CASE WHEN datahdr%ma=0 THEN ma ELSE datahdr%ma END))+nullhdr2+4))/(bs-20::float)) AS otta,
-        COALESCE(c2.relname,'?') AS iname, COALESCE(c2.reltuples,0) AS ituples, COALESCE(c2.relpages,0) AS ipages,
-        COALESCE(CEIL((c2.reltuples*(datahdr-12))/(bs-20::float)),0) AS iotta -- very rough approximation, assumes all cols
-      FROM (
-        SELECT
-          ma,bs,schemaname,tablename,
-          (datawidth+(hdr+ma-(case when hdr%ma=0 THEN ma ELSE hdr%ma END)))::numeric AS datahdr,
-          (maxfracsum*(nullhdr+ma-(case when nullhdr%ma=0 THEN ma ELSE nullhdr%ma END))) AS nullhdr2
-        FROM (
-          SELECT
-            schemaname, tablename, hdr, ma, bs,
-            SUM((1-null_frac)*avg_width) AS datawidth,
-            MAX(null_frac) AS maxfracsum,
-            hdr+(
-              SELECT 1+count(*)/8
-              FROM pg_stats s2
-              WHERE null_frac<>0 AND s2.schemaname = s.schemaname AND s2.tablename = s.tablename
-            ) AS nullhdr
-          FROM pg_stats s, (
-            SELECT
-              (SELECT current_setting('block_size')::numeric) AS bs,
-              CASE WHEN substring(v,12,3) IN ('8.0','8.1','8.2') THEN 27 ELSE 23 END AS hdr,
-              CASE WHEN v ~ 'mingw32' THEN 8 ELSE 4 END AS ma
-            FROM (SELECT version() AS v) AS foo
-          ) AS constants
-          GROUP BY 1,2,3,4,5
-        ) AS foo
-      ) AS rs
-      JOIN pg_class cc ON cc.relname = rs.tablename
-      JOIN pg_namespace nn ON cc.relnamespace = nn.oid AND nn.nspname = rs.schemaname AND nn.nspname <> 'information_schema'
-      LEFT JOIN pg_index i ON indrelid = cc.oid
-      LEFT JOIN pg_class c2 ON c2.oid = i.indexrelid
-    ) AS sml
-    WHERE sml.relpages - otta > 0 OR ipages - iotta > 10
-    ORDER BY wastedbytes DESC;
+* Does your ORM support…
+* max?
+* min?
+* count?
+* count distinct?
+
+!SLIDE smbullets incremental
+
+## Other queries are possible in ORMs, but really hard. ##
+
+* E.g. this [query to list your most bloated tables](http://quinnweaver.com/heretical-perl/table-bloat-query.sql): http://quinnweaver.com/heretical-perl/table-bloat-query.sql
+
+!SLIDE smbullets incremental 
+
+## Again, it is possible. ##
+
+* But it would require a lot of contortions.
+* Which raises the question:  why not SQL?
+
+!SLIDE smbullets incremental
+
+# SQL is a great DSL. #
+
+* Compact
+* Expressive
+* Ideal for making queries against relational databases
+* (Imagine that!)
+* "Makes the easy things easy and the hard things possible."
+
+!SLIDE smbullets incremental
+
+# SQL and the Web #
+
+* Raw SQL gets a bad rap…
+* … because of the CGI.pm–era practice of putting SQL in your HTML.
+* SQL + HTML + Perl ( + JS ) = a mess, to be sure.
+* But MVCs give you a clean separation of concerns.
+* Let's take a look…
+
+!SLIDE transition=fade
+
+# our $method; #

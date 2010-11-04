@@ -14,14 +14,16 @@
 
 # YesSQL #
 
-!SLIDE bullets incremental
+!SLIDE smbullets incremental
 
 # Preliminaries #
 
 .notes There's lots of material.  We're going move quickly.  Please raise your hand if something is unclear; for longer questions, I'm leaving 15 minutes for Q&A.
 
-* Show of hands:  how many people have used an ORM (Perl or other)?
+* Show of hands:  how many people have used *some* ORM?
 
 * How many people have been frustrated by that ORM?
 
-* How many people have never used a (web) MVC framework?
+* How many people have used a (web) MVC framework?
+
+* How many people have never used Perl?  DBI?

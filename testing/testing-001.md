@@ -2,39 +2,35 @@
 
 # Testing #
 
-!SLIDE incremental bullets
+!SLIDE incremental smbullets
 
-# pgTAP #
+## pgTAP ##
 
-* A tap-emiting test harness written as SQL stored procs
+* A TAP-emiting test harness written as PL/pgSQL functions
 * Another gem from David Wheeler
-* He's giving a talk about it at PostgreSQL West
+* He gave [a talk about it](https://www.postgresqlconference.org/content/test-driven-database-development) Tuesday
+* Just the quickest taste, in case you missed it:
 
 !SLIDE incremental smbullets
 
-# pgTAP usage #
+## pgTAP usage ##
 
 * SELECT plan( 49 );
 * SELECT has_function( 'public', 'major_versions', '{}'::name[] );
 * SELECT results_eq( 'have', 'want', 'major_versions() should return expected query values' );
-* PREPARE want AS VALUES ('8.0'), ('8.1'), ('8.2'), ('8.3'), ('8.4'), ('8.5'), ('9.0');
-* SELECT results_eq( 'have', 'want', 'major_versions() should return actual values' );
 * … and much more
 
 !SLIDE incremental smbullets
 
-# Test::XPath #
+## Test::XPath ##
 
 * Test whether XPath predicates are true of your XHTML
 * Good for picking out subparts of the doc
-* Not so good for validating overall structure of the doc
-* E.g. not good for saying "this element has 1 to n children"
-
-    $tx->is( 'count(/html/body)', 1, 'Should have 1 body element' );
+* Somewhat awkward for validating overall structure of the doc
 
 !SLIDE smaller code
 
-# Test::XPath usage #
+## Test::XPath usage ##
 
     @@@ perl
     $tx->is( 'count(/html/body)', 1, 'Should have 1 body element' );
@@ -48,12 +44,12 @@
         'Title should be correct'
     );
 
-!SLIDE incremental bullets
+!SLIDE incremental smbullets
 
-# Test::XPath usage #
+## Test::XPath usage ##
 
-* Can use anon subs to operate on subsections of doc
-* = grab matching section first, then search in it
+* Can use anon subs to operate on subsections of the document…
+* i.e. grab the matching section first, then operate on it.
 
 !SLIDE smaller code
 
@@ -69,25 +65,26 @@
         }
     }
 
-!SLIDE incremental bullets
+!SLIDE incremental smbullets
 
-# Test::XPath complement? #
+## Test::XPath complement? ##
 
-* I'd like to write a Test::RNC to test schemas
+* I'd like to write a Test::RNC to test against a schema
 * More concise, declarative
-* No tuits right now…
+* Maybe next Drakecon…
 
-!SLIDE transition=fade incremental bullets
+!SLIDE transition=fade incremental smbullets
         
-# Module::Build::DB #
+# Testing:  Module::Build::DB #
 
-* Yet another awesome David Wheeler module
+* Another Wheeler module
+* Facilitates testing
 * Idea:  your database is a fixture, i.e. part of your test suite
 * Different DB contents for different environments
 
 !SLIDE small code
 
-# Module::Build::DB usage #
+## Module::Build::DB usage ##
 
     @@@ yaml
     --- conf/dev.yml 
@@ -99,11 +96,11 @@
 
 !SLIDE small code
       
-# Module::Build::DB usage #
+@# Module::Build::DB usage ##
 
     @@@ sh
     $ perl Build.pm
     $ ./Build --context test # or dev, or your_id
-    $ ./Build db # sets up fixture
-    $ ./Build test
+    $ ./Build db # sets up fixture; populates from migrations in sql/
+    $ ./Build test # runs tests against it
     $ ./Build $MODULE_BUILD_COMMAND

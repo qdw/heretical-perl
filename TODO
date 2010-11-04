@@ -1,0 +1,25 @@
+* push to heroku again
+
+**** Fix or revert warnings code
+**** Add info on DBIx::Connector
+
+
+
+
+* Drakeify first slide
+* Drafeify last slide
+* Add a _preview con mucha Drakeificación
+
+X Mark up table_bloat.sql statically somewhere
+X Make the sizes of bullets consistent across all slides.
+X Make the sizes of @@@ code sections consistent across all slides.
+X Double-check that all code fits on page.
+X Be consistent about using periods or no periods at the ends of bullet points.
+X Be consistent about lowercasing titles
+X Be consistent:  dbh and sth, not $dbh and $sth
+X Push to heroku
+
+
+x Make the sizes of headers consistent across all slides.
+x Add more slick transitions for code.
+x Convert ' and "" to ’ and “” respectively.

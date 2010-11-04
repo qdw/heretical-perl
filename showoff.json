@@ -1,12 +1,15 @@
 {
-    "name" : "Heretical Perl:  Writing Catalyst Apps with No ORM",
-    "description" : "A Clean Technique for MVC Apps with SQL as the Model",
-    "sections" : [
-         {"section" : "preliminaries"},
-         {"section" : "why_no_orm"},
-         {"section" : "our_way"},
-         {"section" : "view"},
-         {"section" : "digression_dbix_connector"},
-         {"section" : "testing"}
+    "name":  "Heretical Perl:  Writing Catalyst Apps with No ORM",
+    "description":  "A Clean Technique for MVC Apps with SQL as the Model",
+    "sections":  [
+         {"section":  "preliminaries"},
+         {"section":  "why_no_orm"},
+         {"section":  "controller"},
+         {"section":  "model"},
+         {"section":  "view"},
+         {"section":  "testing"},
+         {"section":  "digression_dbix_connector"},
+         {"section":  "digression_template_declare"},
+         {"section":  "conclusion"}
     ]
 }
