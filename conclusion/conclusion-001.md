@@ -1,4 +1,4 @@
-!SLIDE transition=fade bullets
+!SLIDE transition=fade center bullets
 
 ## Goodies ##
 
@@ -7,9 +7,11 @@
 * [The slides for this talk:  http://bit.ly/noorm](http://bit.ly/noorm)
 * [showoff, the app that made these slides:  showoff on github](http://github.com/schacon/showoff)
 
-!SLIDE transition=fade incremental bullets
+!SLIDE transition=fade center incremental bullets
 
-## Thanks! ##
+![Drakecon 2010:  Drake at the Drake!](drakeconlogo.png)
+
+# Thanks! #
 
 * Feedback
 

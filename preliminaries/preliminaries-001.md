@@ -1,4 +1,6 @@
-!SLIDE title-slide
+!SLIDE title-slide center
+
+![Drakecon 2010:  Drake at the Drake!](drakeconlogo.png)
 
 # Heretical Perl #
 
