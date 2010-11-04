@@ -66,7 +66,7 @@
 
     @@@ perl
     $conn->txn(sub {
-        # Do a bunch of DBI stuff
+        # Make a bunch of normal DBI calls
     });
 
 !SLIDE smbullets
