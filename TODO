@@ -1,23 +1,5 @@
-* push to heroku again
+*** Figure out how to use :Path('/foo') to make http://versions.pgexperts.com/
+invoke the Compare controller's compare method (not the Root controller's
+index method)
 
-**** Fix or revert warnings code
-**** Add info on DBIx::Connector
-
-
-X Drakeify first slide
-X Drafeify last slide
-X Mark up table_bloat.sql statically somewhere
-X Make the sizes of bullets consistent across all slides.
-X Make the sizes of @@@ code sections consistent across all slides.
-X Double-check that all code fits on page.
-X Be consistent about using periods or no periods at the ends of bullet points.
-X Be consistent about lowercasing titles
-X Be consistent:  dbh and sth, not $dbh and $sth
-X Push to heroku
-
-
-x Make the sizes of headers consistent across all slides.
-x Add more slick transitions for code.
-x Convert ' and "" to ’ and “” respectively.
-x Make the Drakecon images into clickable <a>'s, somehow
-x Add a _preview con mucha Drakeificación
+*** Add more info to DBIx::Connector slides
