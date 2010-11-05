@@ -1,3 +1,7 @@
+- 9.0!
+
+- warnings fix
+
 *** Figure out how to use :Path('/foo') to make http://versions.pgexperts.com/
 invoke the Compare controller's compare method (not the Root controller's
 index method)
