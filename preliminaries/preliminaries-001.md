@@ -8,6 +8,8 @@
 
 ## by Quinn Weaver <<quinn@pgexperts.com>> ##
 
+BSD-licensed.  See last slide for license text.
+
 ### Use the arrow keys to navigate.  This works in Chrome or Firefox (this is a [showoff](https://github.com/schacon/showoff) presentation). ###
 
 !SLIDE transition=fade
