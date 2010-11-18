@@ -1,0 +1,10 @@
+Catalyst is the leading web MVC framework for Perl. Normally, Catalyst apps
+use an ORM to communicate with the database. While ORMs can be convenient,
+they can also hurt performance, tie your app to one database schema, and make
+complex queries difficult.
+
+But this is Perl, and TMTOWTDI applies: There's More Than One Way To Do It.
+In this talk, I'll take you through the code of a working Catalyst app that
+uses stored procedures rather than ORM queries as its interface to
+PostgreSQL. Along the way, I'll touch on a number of useful modules and
+pragmas such as DBIx::Connector, aliased, Template::Declare, and Test::XPath.
